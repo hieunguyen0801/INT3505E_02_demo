@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+  <h3>Danh sách sách (mẫu)</h3>
+
+  <form action="{{ url_for('add_book') }}" method="post" style="margin:12px 0 18px">
+    <h4>Thêm sách</h4>
+    <p>
+      <label>Tiêu đề: <input name="title" required></label>
+      <label style="margin-left:12px">Tác giả: <input name="author" required></label>
+      <label style="margin-left:12px">Năm: <input name="year" type="number" min="0" required></label>
+      <label style="margin-left:12px">Kệ: <input name="shelf_code" placeholder="A3-12"></label>
+      <label style="margin-left:12px">Link: <input name="location_url" placeholder="https://..."></label>
+      <button type="submit">Thêm</button>
+    </p>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th><th>Tên sách</th><th>Tác giả</th><th>Năm</th><th>Kệ</th><th>Link</th>
+        <th>Trạng thái</th><th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for b in books %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ b.title }}</td>
+          <td>{{ b.author }}</td>
+          <td>{{ b.year }}</td>
+          <td>{{ b.shelf_code or "-" }}</td>
+          <td>
+            {% if b.location_url %}
+              <a href="{{ b.location_url }}" target="_blank" rel="noopener">Xem</a>
+            {% else %}-{% endif %}
+          </td>
+          <td>
+            {% if b.current_loan %}
+              Đang mượn: <strong>{{ b.current_loan.borrower_name }}</strong><br>
+              Hạn: {{ b.current_loan.due_at }}
+            {% else %}
+              Có sẵn
+            {% endif %}
+          </td>
+          <td>
+            {% if b.current_loan %}
+              <form action="{{ url_for('return_book', loan_id=b.current_loan.id) }}" method="post">
+                <button type="submit">Trả</button>
+              </form>
+            {% else %}
+              <form action="{{ url_for('borrow_book', book_id=b.id) }}" method="post" style="display:inline">
+                <input name="borrower_name" placeholder="Tên người mượn" required>
+                <button type="submit">Mượn</button>
+              </form>
+              <form action="{{ url_for('delete_book', book_id=b.id) }}" method="post" style="display:inline"
+                    onsubmit="return confirm('Xoá sách này? Lịch sử mượn của sách này cũng bị xoá.');">
+                <button type="submit">Xoá</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr><td colspan="8">Chưa có sách</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
