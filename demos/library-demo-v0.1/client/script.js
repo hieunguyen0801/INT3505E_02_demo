@@ -1,24 +1,20 @@
-// ---- API base config (linh hoạt theo môi trường) ----
 function getApiBase() {
   const qs = new URLSearchParams(location.search);
-  const fromQS = qs.get('api');                  // ưu tiên ?api=...
-  const fromGlobal = typeof window !== 'undefined' ? window.API_BASE : undefined; // từ index.html
-  const fallback = location.origin + '/api';     // same-origin nếu deploy chung host
+  const fromQS = qs.get('api');                  
+  const fromGlobal = typeof window !== 'undefined' ? window.API_BASE : undefined; 
+  const fallback = location.origin + '/api';     
   const base = fromQS || fromGlobal || fallback;
-  return String(base).replace(/\/+$/, '');       // bỏ dấu '/' cuối
+  return String(base).replace(/\/+$/, '');      
 }
 const API_BASE = getApiBase();
 const API = `${API_BASE}/books`;
 console.log('[Client] API_BASE =', API_BASE);
 console.log('[Client] API endpoint =', API);
 
-
-// ------------------------------------------------------
-
 const $ = (id) => document.getElementById(id);
 const tbody = document.querySelector('#tbl tbody');
 
-let editingIsbn = null; // null = chế độ tạo mới
+let editingIsbn = null; 
 
 async function fetchBooks(q = '') {
   const url = q ? `${API}?q=${encodeURIComponent(q)}` : API;
@@ -146,14 +142,14 @@ function clearFormAndMode() {
   $('isbn').focus();
 }
 
-// Sự kiện
+
 $('btnCreate').addEventListener('click', createBook);
 $('btnUpdate').addEventListener('click', updateBook);
 $('btnClear').addEventListener('click', clearFormAndMode);
 $('btnReload').addEventListener('click', () => render($('search').value.trim()));
 $('btnSearch').addEventListener('click', () => render($('search').value.trim()));
 
-// Cho nút trong bảng gọi được
+
 window.startEdit = startEdit;
 window.deleteBook = deleteBook;
 
