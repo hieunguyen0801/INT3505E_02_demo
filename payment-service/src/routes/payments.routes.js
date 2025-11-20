@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../logger');
+const { paymentsCreatedTotal } = require('../metric');
 const {
     createPayment,
     getPaymentbyId,
@@ -26,6 +27,7 @@ router.post('/', (req, res) => {
     
     const newPayment = createPayment(paymentData);
     res.status(201).json(newPayment);
+    paymentsCreatedTotal.inc();
 
     logger.info('Payment created',{
         paymentId: newPayment.id,
