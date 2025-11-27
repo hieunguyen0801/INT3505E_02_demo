@@ -1,12 +1,19 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
 
-# Virtual env
+# Virtual environments
 .venv/
+venv/
+env/
 
 # SQLite database
 *.db
 
-# VSCode
+# VS Code
 .vscode/
+
+# Logs
+*.log
